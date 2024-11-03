@@ -2,28 +2,24 @@ from django.utils import timezone
 from django.db import models
 from django.urls import reverse
 
-from django.utils.text import slugify
-import uuid
-
 class Category(models.Model):
-    category = models.CharField(u'Категорія', max_length=250, help_text=u'Максимум 250 символів')
-    pub_date = models.DateTimeField('Дата створення', default=timezone.now)
-    slug = models.SlugField('Слаг', unique_for_date='pub_date', blank=True)
+    category = models.CharField('Категорія', max_length=250, help_text='Максимум 250 символів')
+    slug = models.SlugField('Слаг')
+    objects = models.Manager()
 
     class Meta:
-        verbose_name = u'Категорія для новини'
-        verbose_name_plural = u'Категорії для новин'
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.category) + "-" + str(uuid.uuid4())[:8]
-        super(Category, self).save(*args, **kwargs)
+        verbose_name = 'Категорія для публікації'
+        verbose_name_plural = 'Категорії для публікацій'
 
     def __str__(self):
         return self.category
 
     def get_absolute_url(self):
-        return reverse('category-detail', kwargs={'slug': self.slug})
+        try:
+            url = reverse('articles-category-list', kwargs={'slug': self.slug})
+        except:
+            url = "/"
+        return url
     
 class Article(models.Model):
     title = models.CharField('Заголовок', max_length=250, help_text='Максимум 250 символів')
@@ -82,3 +78,9 @@ class ArticleImage(models.Model):
     @property
     def filename(self):
         return self.image.name.rsplit('/', 1)[-1]
+    
+    @property
+    def image_url(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
+        return ''
