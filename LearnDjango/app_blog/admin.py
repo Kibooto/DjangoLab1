@@ -12,11 +12,6 @@ class CategoryAdmin(admin.ModelAdmin):
     )
     prepopulated_fields = {'slug': ('category',)}
 
-    def save_model(self, request, obj, form, change):
-        if not obj.slug:
-            obj.slug = slugify(obj.category) + "-" + str(uuid.uuid4())[:8]
-        super().save_model(request, obj, form, change)
-
 admin.site.register(Category, CategoryAdmin)
 
 class ArticleImageInline(admin.TabularInline):
