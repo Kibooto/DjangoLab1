@@ -119,14 +119,18 @@ USE_TZ = True
 
 import os
 
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# settings.py
 STATIC_URL = '/static/'
 
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+# Додаємо шлях до папки з статичними файлами для розробки
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
-STATICFILES_DIRS = [
-            os.path.join(BASE_DIR, 'static')
-]
+# # Це місце для збору всіх статичних файлів у production середовищі (зазвичай не потрібно для розробки)
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
